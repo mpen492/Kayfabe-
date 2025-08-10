@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draft App</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .player-list, .drafted-list { margin: 20px 0; }
+    button { margin: 5px; padding: 5px 10px; }
+    input { padding: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Draft App</h1>
+
+  <div>
+    <input id="playerName" type="text" placeholder="Enter player name">
+    <button onclick="addPlayer()">Add Player</button>
+  </div>
+
+  <div class="player-list">
+    <h2>Available Players</h2>
+    <ul id="availablePlayers"></ul>
+  </div>
+
+  <div class="drafted-list">
+    <h2>Drafted Players</h2>
+    <ul id="draftedPlayers"></ul>
+  </div>
+
+  <script>
+    let availablePlayers = [];
+    let draftedPlayers = [];
+
+    function addPlayer() {
+      const name = document.getElementById("playerName").value.trim();
+      if (name) {
+        availablePlayers.push(name);
+        document.getElementById("playerName").value = "";
+        renderLists();
+      }
+    }
+
+    function draftPlayer(index) {
+      draftedPlayers.push(availablePlayers[index]);
+      availablePlayers.splice(index, 1);
+      renderLists();
+    }
+
+    function renderLists() {
+      document.getElementById("availablePlayers").innerHTML = availablePlayers
+        .map((p, i) => `<li>${p} <button onclick="draftPlayer(${i})">Draft</button></li>`)
+        .join("");
+      document.getElementById("draftedPlayers").innerHTML = draftedPlayers
+        .map(p => `<li>${p}</li>`)
+        .join("");
+    }
+  </script>
+</body>
+</html>
