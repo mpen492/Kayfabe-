@@ -1,0 +1,52 @@
+// server.js
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+// Example in-memory database
+let drafts = [];
+let players = [];
+
+// Create a new draft
+app.post("/draft", (req, res) => {
+  const { name, date } = req.body;
+  const newDraft = { id: drafts.length + 1, name, date, picks: [] };
+  drafts.push(newDraft);
+  res.json(newDraft);
+});
+
+// Get all drafts
+app.get("/drafts", (req, res) => {
+  res.json(drafts);
+});
+
+// Add player to draft
+app.post("/draft/:id/player", (req, res) => {
+  const { id } = req.params;
+  const { playerName, info } = req.body;
+  const draft = drafts.find(d => d.id == id);
+
+  if (!draft) {
+    return res.status(404).json({ error: "Draft not found" });
+  }
+
+  const newPlayer = { id: players.length + 1, name: playerName, info };
+  players.push(newPlayer);
+  draft.picks.push(newPlayer);
+
+  res.json(newPlayer);
+});
+
+// Get all players
+app.get("/players", (req, res) => {
+  res.json(players);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
